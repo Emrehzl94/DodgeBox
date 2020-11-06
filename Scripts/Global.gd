@@ -1,18 +1,23 @@
 extends Node
 
+var camera = null
+var player = null
 var point_amount = 5
 var points = []
 var screen_width = 1080
 var lane_width
 var spawn_index
-var player_spawn_location 
+var player_spawn_location
+var first_point
 
 var rng = RandomNumberGenerator.new()
 
 func _ready():
+	print(get_viewport().size.x)
+	#screen_width = get_viewport().size.x * 2
 	calculate_points()
 	spawn_index = rng.randi_range(0, Global.point_amount - 1)
-	player_spawn_location = Vector2(Global.points[spawn_index], 200)
+	player_spawn_location = Vector2(Global.points[spawn_index], 300)
 	
 func instance_node(node, location, parent):
 	var node_instance = node.instance()
@@ -22,7 +27,7 @@ func instance_node(node, location, parent):
 
 func calculate_points():
 	lane_width = screen_width / point_amount
-	var first_point = lane_width / 2
+	first_point = lane_width / 2
 	points.append(first_point)
 	
 	for i in range(1, point_amount):

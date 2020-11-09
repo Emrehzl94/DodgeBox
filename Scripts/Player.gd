@@ -21,8 +21,8 @@ func _ready():
 	location_index = Global.spawn_index
 		
 func _process(delta):
-	move_with_keyboard()
-	#move_with_swipe()
+	#move_with_keyboard()
+	move_with_swipe()
 			
 func _physics_process(delta):
 	if is_moving:
@@ -58,9 +58,9 @@ func move_with_swipe():
 			is_left = false
 
 func _on_Area2D_area_entered(area):
-	var blood_particles_instance = Global.instance_node(blood_particles, global_position, get_parent())
-	blood_particles_instance.initial_velocity = 2 * get_parent().get_node("Spawner").base_speed
 	if area.is_in_group("Enemy"):
+		var blood_particles_instance = Global.instance_node(blood_particles, global_position, get_parent())
+		blood_particles_instance.initial_velocity = 2 * get_parent().get_node("Spawner").base_speed
 		visible = false
 		get_tree().paused = true
 		area.get_parent().modulate = Color.white
@@ -68,11 +68,18 @@ func _on_Area2D_area_entered(area):
 		yield(get_tree().create_timer(5), "timeout")
 		get_tree().reload_current_scene()
 	if area.is_in_group("Collectable"):
+		Global.slow_motion_amount += 1
 		area.get_parent().queue_free()
 
 func _on_SwipeDetector_swipe(swipe):
-	print(swipe)
 	if swipe == "left":
 		is_left = true
 	elif swipe == "right":
 		is_right = true
+
+func _on_SlowMotionTimer_timeout():
+	if Global.slow_motion_enabled:
+		Global.slow_motion_amount -= 1 
+	if Global.slow_motion_amount == 0:
+		Global.slow_motion_enabled = false
+	print("slow motion amount: ", Global.slow_motion_amount)

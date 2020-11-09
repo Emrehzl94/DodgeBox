@@ -37,5 +37,15 @@ script = ExtResource( 4 )
 
 [node name="Screen_shake_time" type="Timer" parent="Camera2D"]
 one_shot = true
+
+[node name="Background" type="ColorRect" parent="."]
+show_behind_parent = true
+margin_right = 40.0
+margin_bottom = 40.0
+rect_scale = Vector2( 26.9747, 47.9705 )
+color = Color( 0.0392157, 0.0196078, 0.0196078, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="timeout" from="Spawner/Spawn_timer" to="Spawner" method="_on_Spawn_timer_timeout"]
 [connection signal="timeout" from="Camera2D/Screen_shake_time" to="Camera2D" method="_on_Screen_shake_time_timeout"]

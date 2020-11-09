@@ -1,14 +1,20 @@
 extends Node
 
-var camera = null
-var player = null
 var point_amount = 5
 var points = []
 var screen_width = 1080
 var lane_width
+
 var spawn_index
 var player_spawn_location
 var first_point
+var camera = null
+var player = null
+
+var is_sliding = false
+var slow_motion_enabled = false
+var slow_motion_strength = 0.5
+var slow_motion_amount = 10
 
 var rng = RandomNumberGenerator.new()
 

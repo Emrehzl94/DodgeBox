@@ -10,7 +10,10 @@ func _ready():
 	set_scale(Vector2(scale, scale))
 
 func _physics_process(delta):
-	global_position += Vector2.UP * speed * delta
+	if Global.slow_motion_enabled:
+		global_position += Vector2.UP * speed * delta * Global.slow_motion_strength
+	else:
+		global_position += Vector2.UP * speed * delta 
 
 func _on_VisibilityNotifier2D_screen_exited():
 	queue_free()

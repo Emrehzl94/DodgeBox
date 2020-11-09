@@ -15,7 +15,6 @@ var collectable_chance = 10
 
 func _ready():
 	distance_between_enemies =  1.2 * Global.lane_width
-	print("distance: ", distance_between_enemies)
 	$Spawn_timer.start()
 
 func _on_Spawn_timer_timeout():
@@ -27,8 +26,11 @@ func _on_Spawn_timer_timeout():
 	else:
 		var instance_enemy = Global.instance_node(enemy, Vector2(Global.points[spawn_index], global_position.y), get_parent())
 		instance_enemy.speed = base_speed
-		
-	$Spawn_timer.wait_time = base_time
+	
+	if Global.slow_motion_enabled:
+		$Spawn_timer.wait_time = base_time / Global.slow_motion_strength
+	else:
+		$Spawn_timer.wait_time = base_time
 	$Spawn_timer.start()
 	if base_speed < max_speed:
 		base_speed += speed_increment

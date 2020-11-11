@@ -12,9 +12,19 @@ var camera = null
 var player = null
 
 var is_sliding = false
+
 var slow_motion_enabled = false
 var slow_motion_strength = 0.5
 var slow_motion_amount = 10
+var slow_motion_speed = 300
+var slow_motion_speed_threshold = 600
+var slow_motion_lerp_amount : float = 0.05
+
+var asset_base_speed : float = 1500
+var asset_speed
+
+var base_spawn_time = 1
+var distance_between_enemies : float = 250
 
 var rng = RandomNumberGenerator.new()
 
@@ -24,6 +34,7 @@ func _ready():
 	calculate_points()
 	spawn_index = rng.randi_range(0, Global.point_amount - 1)
 	player_spawn_location = Vector2(Global.points[spawn_index], 300)
+	distance_between_enemies =  1.2 * Global.lane_width
 	
 func instance_node(node, location, parent):
 	var node_instance = node.instance()

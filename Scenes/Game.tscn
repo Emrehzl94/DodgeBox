@@ -27,6 +27,7 @@ environment = SubResource( 1 )
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 3 )
+volume_db = -80.0
 autoplay = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -40,9 +41,11 @@ one_shot = true
 
 [node name="Background" type="ColorRect" parent="."]
 show_behind_parent = true
-margin_right = 40.0
-margin_bottom = 40.0
-rect_scale = Vector2( 26.9747, 47.9705 )
+margin_left = -521.018
+margin_top = -762.65
+margin_right = -481.018
+margin_bottom = -722.65
+rect_scale = Vector2( 52, 94 )
 color = Color( 0.0392157, 0.0196078, 0.0196078, 1 )
 __meta__ = {
 "_edit_use_anchors_": false

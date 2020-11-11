@@ -60,10 +60,13 @@ func move_with_swipe():
 func _on_Area2D_area_entered(area):
 	if area.is_in_group("Enemy"):
 		var blood_particles_instance = Global.instance_node(blood_particles, global_position, get_parent())
-		blood_particles_instance.initial_velocity = 2 * get_parent().get_node("Spawner").base_speed
+		blood_particles_instance.initial_velocity = 2 * Global.asset_speed
 		visible = false
 		get_tree().paused = true
-		area.get_parent().modulate = Color.white
+		if Global.slow_motion_enabled:	
+			area.get_parent().modulate = Color.black
+		else:
+			area.get_parent().modulate = Color.white
 		Global.camera.screen_shake(25, 0.6)
 		yield(get_tree().create_timer(5), "timeout")
 		get_tree().reload_current_scene()

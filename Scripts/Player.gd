@@ -1,5 +1,6 @@
 extends Sprite
 
+var game
 var player_size : float = 0
 var location_index
 var square_sprite_size : float = 256
@@ -14,6 +15,7 @@ var is_right = false
 var blood_particles = preload("res://Scenes/Blood_particles.tscn")
 
 func _ready():
+	game = get_parent()
 	Global.player = self
 	player_size = Global.lane_width - (Global.lane_width / 2)
 	var scale = player_size / square_sprite_size
@@ -69,7 +71,8 @@ func _on_Area2D_area_entered(area):
 			area.get_parent().modulate = Color.white
 		Global.camera.screen_shake(25, 0.6)
 		yield(get_tree().create_timer(5), "timeout")
-		get_tree().reload_current_scene()
+		game.reset()
+		#get_tree().reload_current_scene()
 	if area.is_in_group("Collectable"):
 		Global.slow_motion_amount += 1
 		area.get_parent().queue_free()
@@ -85,4 +88,3 @@ func _on_SlowMotionTimer_timeout():
 		Global.slow_motion_amount -= 1 
 	if Global.slow_motion_amount == 0:
 		Global.slow_motion_enabled = false
-	print("slow motion amount: ", Global.slow_motion_amount)

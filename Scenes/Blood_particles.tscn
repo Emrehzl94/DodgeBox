@@ -3,7 +3,9 @@
 [ext_resource path="res://Sprites/square.jpg" type="Texture" id=1]
 [ext_resource path="res://Scripts/Blood_particles.gd" type="Script" id=2]
 
-[node name="Blood_particles" type="CPUParticles2D"]
+[node name="Blood_particles" type="CPUParticles2D" groups=[
+"Asset",
+]]
 pause_mode = 2
 rotation = -1.5708
 amount = 100
@@ -22,7 +24,7 @@ color = Color( 0.686275, 0.0470588, 0.513726, 0.596078 )
 script = ExtResource( 2 )
 
 [node name="Freeze_blood" type="Timer" parent="."]
-wait_time = 0.29
+wait_time = 0.25
 one_shot = true
 autostart = true
 [connection signal="timeout" from="Freeze_blood" to="." method="_on_Freeze_blood_timeout"]

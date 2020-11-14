@@ -6,6 +6,8 @@ var explosion_zoom = Vector2(0.6, 0.6)
 var zoom_start = false
 
 func _ready():
+	global_position = Global.camera_base_position
+	print("camera_position: " , global_position)
 	Global.camera = self
 	
 func _physics_process(delta):
@@ -26,5 +28,5 @@ func screen_shake(shake_intensity_param, time):
 
 func _on_Screen_shake_time_timeout():
 	screen_shake_start = false
-	global_position = Vector2(540, 960)
+	global_position = Global.camera_base_position
 	zoom_start = true

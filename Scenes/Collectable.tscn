@@ -6,7 +6,9 @@
 [sub_resource type="CircleShape2D" id=1]
 radius = 123.537
 
-[node name="Collectable" type="Sprite"]
+[node name="Collectable" type="Sprite" groups=[
+"Asset",
+]]
 modulate = Color( 0.858824, 0.811765, 0.0941176, 1 )
 texture = ExtResource( 1 )
 script = ExtResource( 2 )

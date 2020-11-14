@@ -6,7 +6,9 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 129.871, 128.254 )
 
-[node name="Enemy" type="Sprite"]
+[node name="Enemy" type="Sprite" groups=[
+"Asset",
+]]
 modulate = Color( 0.964706, 0.0392157, 0.168627, 1 )
 texture = ExtResource( 1 )
 script = ExtResource( 2 )

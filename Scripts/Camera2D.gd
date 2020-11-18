@@ -14,7 +14,7 @@ func _physics_process(delta):
 	if screen_shake_start:
 		zoom = lerp(zoom, Vector2(1, 1), 0.05)
 		global_position += Vector2(rand_range(-shake_intensity, shake_intensity), rand_range(-shake_intensity, shake_intensity)) * delta
-	
+
 	if zoom_start:
 		global_position = lerp(global_position, Global.player.global_position, 0.05)
 		zoom = lerp(zoom, explosion_zoom, 0.05)

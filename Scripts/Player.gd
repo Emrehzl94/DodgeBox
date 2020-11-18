@@ -13,6 +13,7 @@ var is_left = false
 var is_right = false
 
 var blood_particles = preload("res://Scenes/Blood_particles.tscn")
+var blood_particles_instance
 
 func _ready():
 	game = get_parent()
@@ -61,7 +62,7 @@ func move_with_swipe():
 
 func _on_Area2D_area_entered(area):
 	if area.is_in_group("Enemy"):
-		var blood_particles_instance = Global.instance_node(blood_particles, global_position, get_parent())
+		blood_particles_instance = Global.instance_node(blood_particles, global_position, get_parent())
 		blood_particles_instance.initial_velocity = 2 * Global.asset_speed
 		visible = false
 		get_tree().paused = true
@@ -70,8 +71,9 @@ func _on_Area2D_area_entered(area):
 		else:
 			area.get_parent().modulate = Color.white
 		Global.camera.screen_shake(25, 0.6)
-		yield(get_tree().create_timer(5), "timeout")
-		game.reset()
+		yield(get_tree().create_timer(4), "timeout")
+		game.get_node("CanvasLayer").get_child(3).visible = true
+		#game.reset()
 		#get_tree().reload_current_scene()
 	if area.is_in_group("Collectable"):
 		Global.slow_motion_amount += 1
@@ -88,3 +90,6 @@ func _on_SlowMotionTimer_timeout():
 		Global.slow_motion_amount -= 1 
 	if Global.slow_motion_amount == 0:
 		Global.slow_motion_enabled = false
+
+func remove_blood_particle():
+	blood_particles_instance.queue_free()

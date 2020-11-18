@@ -1,11 +1,15 @@
 extends Node2D
 
 var player = preload("res://Scenes/Player.tscn")
+var player_instance
 
 var target_speed : float
 
 var lines = []
 var line_color = Color.white
+var background_color = Color.black
+
+var ad_watch_count
 
 func _ready():
 	generate_lines()
@@ -25,17 +29,20 @@ func slowMo_actions():
 		Global.asset_speed = lerp(Global.asset_speed, target_speed, Global.slow_motion_lerp_amount)
 		change_background_color(Color.white)
 		change_lines_colors(Color.black)
+		if $WorldEnvironment.environment.is_glow_enabled():
+			$WorldEnvironment.environment.set_glow_enabled(false)
 	else:
 		Global.asset_speed = lerp(Global.asset_speed, Global.asset_base_speed, Global.slow_motion_lerp_amount)
 		change_background_color(Color.black)
 		change_lines_colors(Color.white)
+		if !$WorldEnvironment.environment.is_glow_enabled():
+			$WorldEnvironment.environment.set_glow_enabled(true)
 	
 	Global.base_spawn_time = Global.distance_between_enemies / Global.asset_speed
 
 func generate_lines():
 	for point in Global.points:
 		var line_point = point - Global.first_point
-		print("line_point: ", line_point)
 		lines.append(generate_line(line_point))
 		
 	var last_line_x = Global.points[Global.point_amount - 1 ] + Global.first_point
@@ -54,9 +61,10 @@ func generate_line(x):
 	return line
 	
 func change_background_color(target_color):
-	if $Background.color == target_color:
+	if background_color == target_color:
 		return
-	$Background.color = lerp($Background.color, target_color, Global.slow_motion_lerp_amount)
+	background_color = lerp(background_color, target_color, Global.slow_motion_lerp_amount)
+	$Background.color = background_color
 	
 func change_lines_colors(target_line_color):
 	if line_color == target_line_color:
@@ -66,11 +74,23 @@ func change_lines_colors(target_line_color):
 		line.modulate = line_color
 		
 func reset():
+	get_node("CanvasLayer/GameOver/Panel/VBoxContainer/WatchAdButton").disabled = false
+	ad_watch_count = 0
+	$Background.color = Color.black
+	$CanvasLayer/GameOver.visible = false
 	get_tree().paused = false
 	remove_assets()
 	camera_reset()
 	speed_reset()
-	Global.instance_node(player, Global.player_spawn_location, self)
+	player_instance = Global.instance_node(player, Global.player_spawn_location, self)
+	
+func continue_game():
+	$CanvasLayer/GameOver.visible = false
+	camera_reset()
+	player_instance.visible = true
+	player_instance.remove_blood_particle()
+	get_tree().paused = false
+	ad_watch_count += 1
 
 func remove_assets():
 	var asset_list = get_tree().get_nodes_in_group("Asset")
@@ -89,3 +109,14 @@ func speed_reset():
 	Global.asset_speed = Global.asset_base_speed
 	Global.slow_motion_enabled = false
 	Global.slow_motion_amount = 10
+
+func _on_WatchAdButton_pressed():
+	if ad_watch_count < Global.max_ad_watch_count:
+		continue_game()
+		
+func _on_RestartButton_pressed():
+	reset()
+	
+func _on_GameOver_visibility_changed():
+	if ad_watch_count == Global.max_ad_watch_count:
+		get_node("CanvasLayer/GameOver/Panel/VBoxContainer/WatchAdButton").disabled = true

@@ -31,6 +31,8 @@ var distance_between_enemies : float = 250
 
 var camera_base_position
 
+var max_ad_watch_count = 5
+
 var rng = RandomNumberGenerator.new()
 
 func _ready():

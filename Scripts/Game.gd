@@ -10,6 +10,12 @@ var line_color = Color.white
 var background_color = Color.black
 
 var ad_watch_count
+var count_down_counter = 3
+var count_down_counter_started = false
+
+onready var game_over_panel = get_node("CanvasLayer/GameUI/GameOver")
+onready var watch_ad_button = get_node("CanvasLayer/GameUI/GameOver/VBoxContainer/WatchAdButton")
+onready var count_down_counter_label = get_node("CanvasLayer/GameUI/CountDownCounter")
 
 func _ready():
 	generate_lines()
@@ -74,10 +80,11 @@ func change_lines_colors(target_line_color):
 		line.modulate = line_color
 		
 func reset():
-	get_node("CanvasLayer/GameOver/Panel/VBoxContainer/WatchAdButton").disabled = false
+	watch_ad_button.disabled = false
 	ad_watch_count = 0
 	$Background.color = Color.black
-	$CanvasLayer/GameOver.visible = false
+	game_over_panel.visible = false
+	count_down_counter_label.visible = false
 	get_tree().paused = false
 	remove_assets()
 	camera_reset()
@@ -85,12 +92,19 @@ func reset():
 	player_instance = Global.instance_node(player, Global.player_spawn_location, self)
 	
 func continue_game():
-	$CanvasLayer/GameOver.visible = false
+	game_over_panel.visible = false
 	camera_reset()
 	player_instance.visible = true
 	player_instance.remove_blood_particle()
-	get_tree().paused = false
 	ad_watch_count += 1
+	if Global.slow_motion_enabled:
+		count_down_counter_label.modulate = Color.black
+	else:
+		count_down_counter_label.modulate = Color.white
+	count_down_counter_label.visible = true
+	count_down_counter_label.text = str(count_down_counter)
+	$CountDownTimer.start()
+	count_down_counter_started = true
 
 func remove_assets():
 	var asset_list = get_tree().get_nodes_in_group("Asset")
@@ -116,7 +130,19 @@ func _on_WatchAdButton_pressed():
 		
 func _on_RestartButton_pressed():
 	reset()
-	
+		
+func _on_CountDownTimer_timeout():
+	if count_down_counter_started and count_down_counter != 0:
+		count_down_counter -= 1
+		if count_down_counter == 0:
+			count_down_counter_label.visible = false
+			get_tree().paused = false
+			count_down_counter = 3
+			count_down_counter_started = false
+		else:
+			count_down_counter_label.text = str(count_down_counter)
+			$CountDownTimer.start()
+
 func _on_GameOver_visibility_changed():
 	if ad_watch_count == Global.max_ad_watch_count:
-		get_node("CanvasLayer/GameOver/Panel/VBoxContainer/WatchAdButton").disabled = true
+		watch_ad_button.disabled = true

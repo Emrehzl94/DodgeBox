@@ -15,6 +15,8 @@ var is_right = false
 var blood_particles = preload("res://Scenes/Blood_particles.tscn")
 var blood_particles_instance
 
+onready var game_over_panel = get_parent().get_node("CanvasLayer/GameUI/GameOver")
+
 func _ready():
 	game = get_parent()
 	Global.player = self
@@ -72,9 +74,7 @@ func _on_Area2D_area_entered(area):
 			area.get_parent().modulate = Color.white
 		Global.camera.screen_shake(25, 0.6)
 		yield(get_tree().create_timer(4), "timeout")
-		game.get_node("CanvasLayer").get_child(3).visible = true
-		#game.reset()
-		#get_tree().reload_current_scene()
+		game_over_panel.visible = true
 	if area.is_in_group("Collectable"):
 		Global.slow_motion_amount += 1
 		area.get_parent().queue_free()

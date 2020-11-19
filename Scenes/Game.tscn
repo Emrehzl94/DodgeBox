@@ -1,10 +1,10 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Spawner.gd" type="Script" id=2]
-[ext_resource path="res://Scripts/CanvasLayer.gd" type="Script" id=3]
 [ext_resource path="res://Scripts/Camera2D.gd" type="Script" id=4]
 [ext_resource path="res://Fonts/good times rg.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://Scripts/Stats.gd" type="Script" id=6]
 
 [sub_resource type="Environment" id=1]
 background_mode = 4
@@ -14,7 +14,19 @@ glow_strength = 1.2
 glow_bloom = 0.2
 glow_blend_mode = 0
 
-[sub_resource type="StyleBoxFlat" id=2]
+[sub_resource type="DynamicFont" id=2]
+size = 48
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 48
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 144
+font_data = ExtResource( 5 )
+
+[sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0, 0, 0, 0.92549 )
 border_width_left = 5
 border_width_top = 5
@@ -30,13 +42,13 @@ expand_margin_right = 10.0
 expand_margin_top = 10.0
 expand_margin_bottom = 10.0
 
-[sub_resource type="Theme" id=3]
+[sub_resource type="Theme" id=6]
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="DynamicFont" id=7]
 size = 72
 font_data = ExtResource( 5 )
 
-[sub_resource type="DynamicFont" id=5]
+[sub_resource type="DynamicFont" id=8]
 size = 72
 font_data = ExtResource( 5 )
 
@@ -64,10 +76,10 @@ one_shot = true
 
 [node name="Background" type="ColorRect" parent="."]
 show_behind_parent = true
-margin_left = -582.646
-margin_top = -836.199
-margin_right = -542.646
-margin_bottom = -796.199
+margin_left = -537.748
+margin_top = -849.668
+margin_right = -497.748
+margin_bottom = -809.668
 rect_scale = Vector2( 52, 94 )
 color = Color( 0.0392157, 0.0196078, 0.0196078, 1 )
 __meta__ = {
@@ -77,67 +89,81 @@ __meta__ = {
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 pause_mode = 2
 layer = 2
-script = ExtResource( 3 )
 
-[node name="Stat1" type="Label" parent="CanvasLayer"]
-margin_left = 20.0
-margin_top = 20.0
-margin_right = 120.0
-margin_bottom = 70.0
-rect_scale = Vector2( 2, 2 )
+[node name="GameUI" type="Control" parent="CanvasLayer"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Stat2" type="Label" parent="CanvasLayer"]
-margin_left = 20.0
-margin_top = 150.0
-margin_right = 120.0
-margin_bottom = 200.0
-rect_scale = Vector2( 2, 2 )
+[node name="Stats" type="VBoxContainer" parent="CanvasLayer/GameUI"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -253.0
+margin_right = 565.0
+custom_constants/separation = 20
+script = ExtResource( 6 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Stat3" type="Label" parent="CanvasLayer"]
-margin_left = 20.0
-margin_top = 300.0
-margin_right = 120.0
-margin_bottom = 350.0
-rect_scale = Vector2( 2, 2 )
-text = "selam"
+[node name="Fps" type="Label" parent="CanvasLayer/GameUI/Stats"]
+margin_right = 565.0
+margin_bottom = 58.0
+custom_fonts/font = SubResource( 2 )
+text = "FPS: 60"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="GameOver" type="Control" parent="CanvasLayer"]
+[node name="Memory" type="Label" parent="CanvasLayer/GameUI/Stats"]
+margin_top = 78.0
+margin_right = 565.0
+margin_bottom = 136.0
+custom_fonts/font = SubResource( 3 )
+text = "MEMORY: 18.599"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CountDownCounter" type="Label" parent="CanvasLayer/GameUI"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -59.5
+margin_top = -360.0
+margin_right = 59.5
+margin_bottom = -187.0
+custom_fonts/font = SubResource( 4 )
+text = "3"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GameOver" type="Panel" parent="CanvasLayer/GameUI"]
 pause_mode = 2
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -375.0
-margin_top = -174.5
-margin_right = 375.0
-margin_bottom = 174.5
+margin_left = -401.0
+margin_top = -212.5
+margin_right = 401.0
+margin_bottom = 212.5
+custom_styles/panel = SubResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Panel" type="Panel" parent="CanvasLayer/GameOver"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_styles/panel = SubResource( 2 )
-__meta__ = {
-"_edit_lock_": true,
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GameOver/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GameUI/GameOver"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_stretch_ratio = 0.0
-theme = SubResource( 3 )
+theme = SubResource( 6 )
 custom_constants/separation = 50
 alignment = 1
 __meta__ = {
@@ -145,24 +171,28 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="WatchAdButton" type="Button" parent="CanvasLayer/GameOver/Panel/VBoxContainer"]
-margin_top = 56.0
-margin_right = 750.0
-margin_bottom = 149.0
-custom_fonts/font = SubResource( 4 )
+[node name="WatchAdButton" type="Button" parent="CanvasLayer/GameUI/GameOver/VBoxContainer"]
+margin_top = 94.0
+margin_right = 802.0
+margin_bottom = 187.0
+custom_fonts/font = SubResource( 7 )
 custom_colors/font_color_disabled = Color( 0, 0, 0, 1 )
 custom_colors/font_color_pressed = Color( 0.596078, 0.596078, 0.596078, 1 )
 text = "Watch Ad"
 
-[node name="RestartButton" type="Button" parent="CanvasLayer/GameOver/Panel/VBoxContainer"]
-margin_top = 199.0
-margin_right = 750.0
-margin_bottom = 292.0
-custom_fonts/font = SubResource( 5 )
+[node name="RestartButton" type="Button" parent="CanvasLayer/GameUI/GameOver/VBoxContainer"]
+margin_top = 237.0
+margin_right = 802.0
+margin_bottom = 330.0
+custom_fonts/font = SubResource( 8 )
 custom_colors/font_color_pressed = Color( 0.596078, 0.596078, 0.596078, 1 )
 text = "Restart"
+
+[node name="CountDownTimer" type="Timer" parent="."]
+pause_mode = 2
 [connection signal="timeout" from="Spawner/Spawn_timer" to="Spawner" method="_on_Spawn_timer_timeout"]
 [connection signal="timeout" from="Camera2D/Screen_shake_time" to="Camera2D" method="_on_Screen_shake_time_timeout"]
-[connection signal="visibility_changed" from="CanvasLayer/GameOver" to="." method="_on_GameOver_visibility_changed"]
-[connection signal="pressed" from="CanvasLayer/GameOver/Panel/VBoxContainer/WatchAdButton" to="." method="_on_WatchAdButton_pressed"]
-[connection signal="pressed" from="CanvasLayer/GameOver/Panel/VBoxContainer/RestartButton" to="." method="_on_RestartButton_pressed"]
+[connection signal="visibility_changed" from="CanvasLayer/GameUI/GameOver" to="." method="_on_GameOver_visibility_changed"]
+[connection signal="pressed" from="CanvasLayer/GameUI/GameOver/VBoxContainer/WatchAdButton" to="." method="_on_WatchAdButton_pressed"]
+[connection signal="pressed" from="CanvasLayer/GameUI/GameOver/VBoxContainer/RestartButton" to="." method="_on_RestartButton_pressed"]
+[connection signal="timeout" from="CountDownTimer" to="." method="_on_CountDownTimer_timeout"]

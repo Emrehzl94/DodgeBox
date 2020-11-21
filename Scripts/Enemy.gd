@@ -18,4 +18,7 @@ func _process(delta):
 #		global_position += Vector2.DOWN * Global.asset_speed * delta		
 
 func _on_VisibilityNotifier2D_screen_exited():
-	queue_free()
+	if !get_tree().paused:
+		Global.score += 10
+		print("score increment")
+		queue_free()

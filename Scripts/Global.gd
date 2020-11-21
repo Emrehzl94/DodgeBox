@@ -13,6 +13,8 @@ var first_point
 var camera = null
 var player = null
 
+var score : int = 0
+
 var is_sliding = false
 
 var slow_motion_enabled = false

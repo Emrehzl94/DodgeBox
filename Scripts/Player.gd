@@ -73,7 +73,7 @@ func _on_Area2D_area_entered(area):
 		else:
 			area.get_parent().modulate = Color.white
 		Global.camera.screen_shake(25, 0.6)
-		yield(get_tree().create_timer(4), "timeout")
+		yield(get_tree().create_timer(3), "timeout")
 		game_over_panel.visible = true
 	if area.is_in_group("Collectable"):
 		Global.slow_motion_amount += 1

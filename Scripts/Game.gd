@@ -16,15 +16,16 @@ var count_down_counter_started = false
 onready var game_over_panel = get_node("CanvasLayer/GameUI/GameOver")
 onready var watch_ad_button = get_node("CanvasLayer/GameUI/GameOver/VBoxContainer/WatchAdButton")
 onready var count_down_counter_label = get_node("CanvasLayer/GameUI/CountDownCounter")
+onready var score_label = get_node("CanvasLayer/GameUI/Score/ScoreLabel")
 
 func _ready():
 	generate_lines()
 	reset()
 	
 func _physics_process(delta):
-	slowMo_actions()
+	game_actions()
 	
-func slowMo_actions():
+func game_actions():
 	if Global.slow_motion_enabled:
 		if Global.asset_base_speed < Global.slow_motion_speed_threshold:
 			target_speed = Global.asset_base_speed * Global.slow_motion_strength
@@ -36,15 +37,19 @@ func slowMo_actions():
 		change_background_color(Color.white)
 		change_lines_colors(Color.black)
 		if $WorldEnvironment.environment.is_glow_enabled():
-			$WorldEnvironment.environment.set_glow_enabled(false)
+			$WorldEnvironment.environment.set_glow_enabled(false)	
+		score_label.modulate = Color.black
 	else:
 		Global.asset_speed = lerp(Global.asset_speed, Global.asset_base_speed, Global.slow_motion_lerp_amount)
 		change_background_color(Color.black)
 		change_lines_colors(Color.white)
 		if !$WorldEnvironment.environment.is_glow_enabled():
 			$WorldEnvironment.environment.set_glow_enabled(true)
-	
+		score_label.modulate = Color.white
+		
 	Global.base_spawn_time = Global.distance_between_enemies / Global.asset_speed
+	
+	score_label.text = str(Global.score)
 
 func generate_lines():
 	for point in Global.points:
@@ -85,11 +90,13 @@ func reset():
 	$Background.color = Color.black
 	game_over_panel.visible = false
 	count_down_counter_label.visible = false
-	get_tree().paused = false
 	remove_assets()
 	camera_reset()
 	speed_reset()
 	player_instance = Global.instance_node(player, Global.player_spawn_location, self)
+	Global.score = 0
+	get_tree().paused = false
+	print("game started")
 	
 func continue_game():
 	game_over_panel.visible = false
@@ -110,7 +117,7 @@ func remove_assets():
 	var asset_list = get_tree().get_nodes_in_group("Asset")
 	if asset_list != null and asset_list.size() > 0:
 		for asset in asset_list:
-			asset.visible = false
+			print("asset removed")
 			asset.queue_free()
 
 func camera_reset():

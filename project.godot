@@ -23,7 +23,7 @@ _global_script_class_icons={
 config/name="DodgeBox"
 run/main_scene="res://Scenes/Game.tscn"
 boot_splash/image="res://emresplash.png"
-config/icon="res://Sprites/square.jpg"
+config/icon="res://Sprites/enemybox.PNG"
 
 [autoload]
 

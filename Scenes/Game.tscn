@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Spawner.gd" type="Script" id=2]
+[ext_resource path="res://Sprites/enemybox.PNG" type="Texture" id=3]
 [ext_resource path="res://Scripts/Camera2D.gd" type="Script" id=4]
 [ext_resource path="res://Fonts/good times rg.ttf" type="DynamicFontData" id=5]
 [ext_resource path="res://Scripts/Stats.gd" type="Script" id=6]
@@ -50,6 +51,10 @@ font_data = ExtResource( 5 )
 
 [sub_resource type="DynamicFont" id=8]
 size = 72
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=9]
+size = 48
 font_data = ExtResource( 5 )
 
 [node name="Game" type="Node2D"]
@@ -187,6 +192,31 @@ margin_bottom = 330.0
 custom_fonts/font = SubResource( 8 )
 custom_colors/font_color_pressed = Color( 0.596078, 0.596078, 0.596078, 1 )
 text = "Restart"
+
+[node name="Score" type="HBoxContainer" parent="CanvasLayer/GameUI"]
+margin_left = 30.0
+margin_top = 30.0
+margin_right = 380.0
+margin_bottom = 84.0
+custom_constants/separation = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EnemyIcon" type="TextureRect" parent="CanvasLayer/GameUI/Score"]
+modulate = Color( 0.964706, 0.0392157, 0.168627, 1 )
+margin_right = 89.0
+margin_bottom = 82.0
+texture = ExtResource( 3 )
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/GameUI/Score"]
+margin_left = 109.0
+margin_top = 12.0
+margin_right = 231.0
+margin_bottom = 70.0
+custom_fonts/font = SubResource( 9 )
+text = "500"
+align = 3
 
 [node name="CountDownTimer" type="Timer" parent="."]
 pause_mode = 2

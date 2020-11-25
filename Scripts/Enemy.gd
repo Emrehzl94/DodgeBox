@@ -19,6 +19,4 @@ func _process(delta):
 
 func _on_VisibilityNotifier2D_screen_exited():
 	if !get_tree().paused:
-		Global.score += 10
-		print("score increment")
 		queue_free()

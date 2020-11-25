@@ -12,8 +12,8 @@ var minimum_drag_y = 150
 var press_count = 0
 
 func _input(event):
-	#mouse_swipe(event)
-	touch_swipe(event)
+	mouse_swipe(event)
+	#touch_swipe(event)
 						
 func mouse_swipe(event):
 	if event.is_action_pressed("click"):

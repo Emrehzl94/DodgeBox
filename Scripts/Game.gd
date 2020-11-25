@@ -17,6 +17,11 @@ onready var game_over_panel = get_node("CanvasLayer/GameUI/GameOver")
 onready var watch_ad_button = get_node("CanvasLayer/GameUI/GameOver/VBoxContainer/WatchAdButton")
 onready var count_down_counter_label = get_node("CanvasLayer/GameUI/CountDownCounter")
 onready var score_label = get_node("CanvasLayer/GameUI/Score/ScoreLabel")
+onready var slow_motion_bar = get_node("CanvasLayer/GameUI/SlowMotionBar")
+onready var pause_button = get_node("CanvasLayer/GameUI/PauseButton")
+
+var pause_icon = load("res://Sprites/pause.png")
+var play_icon = load("res://Sprites/play.png")
 
 func _ready():
 	generate_lines()
@@ -39,6 +44,7 @@ func game_actions():
 		if $WorldEnvironment.environment.is_glow_enabled():
 			$WorldEnvironment.environment.set_glow_enabled(false)	
 		score_label.modulate = Color.black
+		pause_button.modulate = Color.black
 	else:
 		Global.asset_speed = lerp(Global.asset_speed, Global.asset_base_speed, Global.slow_motion_lerp_amount)
 		change_background_color(Color.black)
@@ -46,10 +52,12 @@ func game_actions():
 		if !$WorldEnvironment.environment.is_glow_enabled():
 			$WorldEnvironment.environment.set_glow_enabled(true)
 		score_label.modulate = Color.white
+		pause_button.modulate = Color.white
 		
 	Global.base_spawn_time = Global.distance_between_enemies / Global.asset_speed
 	
 	score_label.text = str(Global.score)
+	slow_motion_bar.value = Global.slow_motion_amount
 
 func generate_lines():
 	for point in Global.points:
@@ -87,37 +95,32 @@ func change_lines_colors(target_line_color):
 func reset():
 	watch_ad_button.disabled = false
 	ad_watch_count = 0
-	$Background.color = Color.black
 	game_over_panel.visible = false
 	count_down_counter_label.visible = false
+	pause_button.disabled = false
+	$Background.color = Color.black
 	remove_assets()
 	camera_reset()
 	speed_reset()
 	player_instance = Global.instance_node(player, Global.player_spawn_location, self)
+	if Global.high_score < Global.score:
+		Global.save_highscore()
 	Global.score = 0
 	get_tree().paused = false
-	print("game started")
 	
 func continue_game():
 	game_over_panel.visible = false
 	camera_reset()
 	player_instance.visible = true
 	player_instance.remove_blood_particle()
+	player_instance.stop_moving()
 	ad_watch_count += 1
-	if Global.slow_motion_enabled:
-		count_down_counter_label.modulate = Color.black
-	else:
-		count_down_counter_label.modulate = Color.white
-	count_down_counter_label.visible = true
-	count_down_counter_label.text = str(count_down_counter)
-	$CountDownTimer.start()
-	count_down_counter_started = true
+	start_countdown()
 
 func remove_assets():
 	var asset_list = get_tree().get_nodes_in_group("Asset")
 	if asset_list != null and asset_list.size() > 0:
 		for asset in asset_list:
-			print("asset removed")
 			asset.queue_free()
 
 func camera_reset():
@@ -130,6 +133,16 @@ func speed_reset():
 	Global.asset_speed = Global.asset_base_speed
 	Global.slow_motion_enabled = false
 	Global.slow_motion_amount = 10
+	
+func start_countdown():
+	if Global.slow_motion_enabled:
+		count_down_counter_label.modulate = Color.black
+	else:
+		count_down_counter_label.modulate = Color.white
+	count_down_counter_label.visible = true
+	count_down_counter_label.text = str(count_down_counter)
+	$CountDownTimer.start()
+	count_down_counter_started = true
 
 func _on_WatchAdButton_pressed():
 	if ad_watch_count < Global.max_ad_watch_count:
@@ -143,6 +156,7 @@ func _on_CountDownTimer_timeout():
 		count_down_counter -= 1
 		if count_down_counter == 0:
 			count_down_counter_label.visible = false
+			pause_button.disabled = false
 			get_tree().paused = false
 			count_down_counter = 3
 			count_down_counter_started = false
@@ -153,3 +167,25 @@ func _on_CountDownTimer_timeout():
 func _on_GameOver_visibility_changed():
 	if ad_watch_count == Global.max_ad_watch_count:
 		watch_ad_button.disabled = true
+		
+func _on_player_died():
+	get_tree().paused = true
+	pause_button.disabled = true
+	Global.camera.screen_shake(25, 0.6)
+	yield(get_tree().create_timer(3), "timeout")
+	game_over_panel.visible = true
+	
+func _on_PauseButton_pressed():
+	if !get_tree().paused:
+		pause_button.icon = play_icon
+		get_tree().paused = true
+	else:
+		pause_button.icon = pause_icon
+		start_countdown()
+		
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		if Global.high_score < Global.score:
+			Global.save_highscore()
+		get_tree().quit()
+	

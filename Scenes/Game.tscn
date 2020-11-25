@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Spawner.gd" type="Script" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://Scripts/Camera2D.gd" type="Script" id=4]
 [ext_resource path="res://Fonts/good times rg.ttf" type="DynamicFontData" id=5]
 [ext_resource path="res://Scripts/Stats.gd" type="Script" id=6]
+[ext_resource path="res://Scripts/ScoreArea.gd" type="Script" id=7]
+[ext_resource path="res://Sprites/pause.png" type="Texture" id=8]
 
 [sub_resource type="Environment" id=1]
 background_mode = 4
@@ -46,16 +48,38 @@ expand_margin_bottom = 10.0
 [sub_resource type="Theme" id=6]
 
 [sub_resource type="DynamicFont" id=7]
-size = 72
+size = 92
 font_data = ExtResource( 5 )
 
 [sub_resource type="DynamicFont" id=8]
-size = 72
+size = 92
 font_data = ExtResource( 5 )
 
 [sub_resource type="DynamicFont" id=9]
 size = 48
 font_data = ExtResource( 5 )
+
+[sub_resource type="StyleBoxFlat" id=10]
+bg_color = Color( 0.858824, 0.811765, 0.0941176, 1 )
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id=11]
+bg_color = Color( 0.227451, 0.215686, 0.0901961, 0 )
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color( 0.552941, 0.447059, 0.027451, 1 )
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="RectangleShape2D" id=12]
+extents = Vector2( 658.67, 126.465 )
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 1 )
@@ -156,9 +180,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -401.0
-margin_top = -212.5
+margin_top = -164.0
 margin_right = 401.0
-margin_bottom = 212.5
+margin_bottom = 164.0
 custom_styles/panel = SubResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -169,7 +193,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_stretch_ratio = 0.0
 theme = SubResource( 6 )
-custom_constants/separation = 50
+custom_constants/separation = 0
 alignment = 1
 __meta__ = {
 "_edit_lock_": true,
@@ -177,27 +201,36 @@ __meta__ = {
 }
 
 [node name="WatchAdButton" type="Button" parent="CanvasLayer/GameUI/GameOver/VBoxContainer"]
-margin_top = 94.0
 margin_right = 802.0
-margin_bottom = 187.0
+margin_bottom = 164.0
+focus_mode = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_fonts/font = SubResource( 7 )
 custom_colors/font_color_disabled = Color( 0, 0, 0, 1 )
 custom_colors/font_color_pressed = Color( 0.596078, 0.596078, 0.596078, 1 )
+enabled_focus_mode = 0
 text = "Watch Ad"
+flat = true
 
 [node name="RestartButton" type="Button" parent="CanvasLayer/GameUI/GameOver/VBoxContainer"]
-margin_top = 237.0
+margin_top = 164.0
 margin_right = 802.0
-margin_bottom = 330.0
+margin_bottom = 328.0
+focus_mode = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_fonts/font = SubResource( 8 )
 custom_colors/font_color_pressed = Color( 0.596078, 0.596078, 0.596078, 1 )
+enabled_focus_mode = 0
 text = "Restart"
+flat = true
 
 [node name="Score" type="HBoxContainer" parent="CanvasLayer/GameUI"]
-margin_left = 30.0
+margin_left = 180.0
 margin_top = 30.0
-margin_right = 380.0
-margin_bottom = 84.0
+margin_right = 411.0
+margin_bottom = 112.0
 custom_constants/separation = 20
 __meta__ = {
 "_edit_use_anchors_": false
@@ -216,13 +249,55 @@ margin_right = 231.0
 margin_bottom = 70.0
 custom_fonts/font = SubResource( 9 )
 text = "500"
-align = 3
+align = 1
+
+[node name="SlowMotionBar" type="ProgressBar" parent="CanvasLayer/GameUI"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -330.0
+margin_top = 58.0
+margin_right = -20.0
+margin_bottom = 92.0
+rect_min_size = Vector2( 310, 34 )
+custom_styles/fg = SubResource( 10 )
+custom_styles/bg = SubResource( 11 )
+max_value = 20.0
+value = 5.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PauseButton" type="Button" parent="CanvasLayer/GameUI"]
+margin_top = 5.0
+margin_right = 268.0
+margin_bottom = 267.0
+rect_min_size = Vector2( 100, 100 )
+rect_scale = Vector2( 0.5, 0.5 )
+focus_mode = 0
+enabled_focus_mode = 0
+icon = ExtResource( 8 )
+flat = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="CountDownTimer" type="Timer" parent="."]
 pause_mode = 2
+
+[node name="ScoreArea" type="Area2D" parent="." groups=[
+"ScoreArea",
+]]
+position = Vector2( 570.127, 1574.05 )
+script = ExtResource( 7 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ScoreArea"]
+shape = SubResource( 12 )
 [connection signal="timeout" from="Spawner/Spawn_timer" to="Spawner" method="_on_Spawn_timer_timeout"]
 [connection signal="timeout" from="Camera2D/Screen_shake_time" to="Camera2D" method="_on_Screen_shake_time_timeout"]
 [connection signal="visibility_changed" from="CanvasLayer/GameUI/GameOver" to="." method="_on_GameOver_visibility_changed"]
 [connection signal="pressed" from="CanvasLayer/GameUI/GameOver/VBoxContainer/WatchAdButton" to="." method="_on_WatchAdButton_pressed"]
 [connection signal="pressed" from="CanvasLayer/GameUI/GameOver/VBoxContainer/RestartButton" to="." method="_on_RestartButton_pressed"]
+[connection signal="pressed" from="CanvasLayer/GameUI/PauseButton" to="." method="_on_PauseButton_pressed"]
 [connection signal="timeout" from="CountDownTimer" to="." method="_on_CountDownTimer_timeout"]
+[connection signal="area_entered" from="ScoreArea" to="ScoreArea" method="_on_ScoreArea_area_entered"]

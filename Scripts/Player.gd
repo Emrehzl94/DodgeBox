@@ -1,5 +1,7 @@
 extends Sprite
 
+signal player_died
+
 var game
 var player_size : float = 0
 var location_index
@@ -15,10 +17,9 @@ var is_right = false
 var blood_particles = preload("res://Scenes/Blood_particles.tscn")
 var blood_particles_instance
 
-onready var game_over_panel = get_parent().get_node("CanvasLayer/GameUI/GameOver")
-
 func _ready():
 	game = get_parent()
+	self.connect("player_died", game, "_on_player_died")
 	Global.player = self
 	player_size = Global.lane_width - (Global.lane_width / 2)
 	var scale = player_size / square_sprite_size
@@ -33,10 +34,7 @@ func _physics_process(delta):
 	if is_moving:
 		global_position = lerp(global_position, target_position, 0.5)
 		if round(global_position.x) == (target_position.x):
-			global_position = target_position
-			is_moving = false
-			is_right = false
-			is_left = false
+			stop_moving()
 			
 func move_with_keyboard():
 	if Input.is_action_just_released("right") and location_index < Global.point_amount - 1:
@@ -67,14 +65,11 @@ func _on_Area2D_area_entered(area):
 		blood_particles_instance = Global.instance_node(blood_particles, global_position, get_parent())
 		blood_particles_instance.initial_velocity = 2 * Global.asset_speed
 		visible = false
-		get_tree().paused = true
 		if Global.slow_motion_enabled:	
 			area.get_parent().modulate = Color.black
 		else:
 			area.get_parent().modulate = Color.white
-		Global.camera.screen_shake(25, 0.6)
-		yield(get_tree().create_timer(3), "timeout")
-		game_over_panel.visible = true
+		emit_signal("player_died")
 	if area.is_in_group("Collectable"):
 		Global.slow_motion_amount += 1
 		area.get_parent().queue_free()
@@ -90,6 +85,12 @@ func _on_SlowMotionTimer_timeout():
 		Global.slow_motion_amount -= 1 
 	if Global.slow_motion_amount == 0:
 		Global.slow_motion_enabled = false
-
+		
+func stop_moving():
+	global_position = target_position
+	is_moving = false
+	is_right = false
+	is_left = false
+	
 func remove_blood_particle():
 	blood_particles_instance.queue_free()

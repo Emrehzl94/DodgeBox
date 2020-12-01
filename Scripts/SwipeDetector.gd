@@ -12,8 +12,8 @@ var minimum_drag_y = 150
 var press_count = 0
 
 func _input(event):
-	mouse_swipe(event)
-	#touch_swipe(event)
+	#mouse_swipe(event)
+	touch_swipe(event)
 						
 func mouse_swipe(event):
 	if event.is_action_pressed("click"):
@@ -32,16 +32,6 @@ func mouse_swipe(event):
 					emit_signal("swipe", "right")
 				else:
 					emit_signal("swipe", "left")
-				
-#		if swipe.y > minimum_drag_y and !Global.slow_motion_enabled and Global.slow_motion_amount > 0:
-#			Global.slow_motion_enabled = true
-#		elif -swipe.y > minimum_drag_y and Global.slow_motion_enabled:
-#			Global.slow_motion_enabled = false
-#		elif abs(swipe.x) > minimum_drag_x:
-#			if swipe.x > 0:
-#				emit_signal("swipe", "right")
-#			else:
-#				emit_signal("swipe", "left")
 						
 func touch_swipe(event):
 	if event is InputEventScreenTouch:
@@ -62,23 +52,3 @@ func touch_swipe(event):
 					else:
 						emit_signal("swipe", "left")
 											
-#func touch_swipe(event):
-#	if event is InputEventScreenTouch:
-#		if event.is_pressed():
-#			swipe_start = event.get_position()
-#		else:
-#			swipe_end = event.get_position()
-#			swipe = swipe_end - swipe_start
-#			if abs(swipe.x) > minimum_drag_x:
-#				if swipe.x > 0:
-#					emit_signal("swipe", "right")
-#				else:
-#					emit_signal("swipe", "left")
-#			else:
-#				press_count += 1
-#				if press_count == 2:
-#					if Global.slow_motion_enabled:
-#						Global.slow_motion_enabled = false
-#					elif !Global.slow_motion_enabled and Global.slow_motion_amount > 0:
-#						Global.slow_motion_enabled = true
-#						press_count = 0

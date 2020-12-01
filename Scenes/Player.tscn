@@ -24,6 +24,8 @@ script = ExtResource( 3 )
 
 [node name="SlowMotionTimer" type="Timer" parent="."]
 autostart = true
+
+[node name="Tween" type="Tween" parent="."]
 [connection signal="area_entered" from="Area2D" to="." method="_on_Area2D_area_entered"]
 [connection signal="swipe" from="SwipeDetector" to="." method="_on_SwipeDetector_swipe"]
 [connection signal="timeout" from="SlowMotionTimer" to="." method="_on_SlowMotionTimer_timeout"]

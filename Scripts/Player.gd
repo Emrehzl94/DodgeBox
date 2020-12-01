@@ -17,6 +17,8 @@ var is_right = false
 var blood_particles = preload("res://Scenes/Blood_particles.tscn")
 var blood_particles_instance
 
+onready var tween = get_node("Tween")
+
 func _ready():
 	game = get_parent()
 	self.connect("player_died", game, "_on_player_died")
@@ -28,13 +30,15 @@ func _ready():
 		
 func _process(delta):
 	#move_with_keyboard()
-	move_with_swipe()
+	#move_with_swipe()
+	pass
 			
 func _physics_process(delta):
-	if is_moving:
-		global_position = lerp(global_position, target_position, 0.5)
-		if round(global_position.x) == (target_position.x):
-			stop_moving()
+#	if is_moving:
+#		global_position = lerp(global_position, target_position, 0.1)
+#		if round(global_position.x) == (target_position.x):
+#			stop_moving()
+	pass
 			
 func move_with_keyboard():
 	if Input.is_action_just_released("right") and location_index < Global.point_amount - 1:
@@ -75,10 +79,26 @@ func _on_Area2D_area_entered(area):
 		area.get_parent().queue_free()
 
 func _on_SwipeDetector_swipe(swipe):
+	print(swipe)
 	if swipe == "left":
 		is_left = true
 	elif swipe == "right":
 		is_right = true
+	
+	if is_right and location_index < Global.point_amount - 1:
+			target_position = Vector2(Global.points[location_index + 1], global_position.y)
+			is_moving = true
+			location_index += 1
+			is_right = false
+	
+	if is_left and location_index > 0:
+			target_position = Vector2(Global.points[location_index - 1], global_position.y)
+			is_moving = true
+			location_index -= 1
+			is_left = false
+			
+	tween.interpolate_property(self, 'position', global_position, target_position, 0.2)
+	tween.start()
 
 func _on_SlowMotionTimer_timeout():
 	if Global.slow_motion_enabled:

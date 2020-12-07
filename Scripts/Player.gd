@@ -27,42 +27,6 @@ func _ready():
 	var scale = player_size / square_sprite_size
 	set_scale(Vector2(scale, scale))
 	location_index = Global.spawn_index
-		
-func _process(delta):
-	#move_with_keyboard()
-	#move_with_swipe()
-	pass
-			
-func _physics_process(delta):
-#	if is_moving:
-#		global_position = lerp(global_position, target_position, 0.1)
-#		if round(global_position.x) == (target_position.x):
-#			stop_moving()
-	pass
-			
-func move_with_keyboard():
-	if Input.is_action_just_released("right") and location_index < Global.point_amount - 1:
-			target_position = Vector2(Global.points[location_index + 1], global_position.y)
-			is_moving = true
-			location_index += 1
-	
-	if Input.is_action_just_released("left") and location_index > 0:
-			target_position = Vector2(Global.points[location_index - 1], global_position.y)
-			is_moving = true
-			location_index -= 1
-			
-func move_with_swipe():
-	if is_right and location_index < Global.point_amount - 1:
-			target_position = Vector2(Global.points[location_index + 1], global_position.y)
-			is_moving = true
-			location_index += 1
-			is_right = false
-	
-	if is_left and location_index > 0:
-			target_position = Vector2(Global.points[location_index - 1], global_position.y)
-			is_moving = true
-			location_index -= 1
-			is_left = false
 
 func _on_Area2D_area_entered(area):
 	if area.is_in_group("Enemy"):
@@ -79,25 +43,15 @@ func _on_Area2D_area_entered(area):
 		area.get_parent().queue_free()
 
 func _on_SwipeDetector_swipe(swipe):
-	print(swipe)
-	if swipe == "left":
-		is_left = true
-	elif swipe == "right":
-		is_right = true
-	
-	if is_right and location_index < Global.point_amount - 1:
+	if swipe == "right" and location_index < Global.point_amount - 1:
 			target_position = Vector2(Global.points[location_index + 1], global_position.y)
-			is_moving = true
 			location_index += 1
-			is_right = false
 	
-	if is_left and location_index > 0:
+	if swipe == "left" and location_index > 0:
 			target_position = Vector2(Global.points[location_index - 1], global_position.y)
-			is_moving = true
 			location_index -= 1
-			is_left = false
 			
-	tween.interpolate_property(self, 'position', global_position, target_position, 0.2)
+	tween.interpolate_property(self, 'position', global_position, target_position, 0.1)
 	tween.start()
 
 func _on_SlowMotionTimer_timeout():
@@ -107,10 +61,9 @@ func _on_SlowMotionTimer_timeout():
 		Global.slow_motion_enabled = false
 		
 func stop_moving():
-	global_position = target_position
-	is_moving = false
-	is_right = false
-	is_left = false
+	if target_position != null:	
+		global_position = target_position
+	tween.stop_all()
 	
 func remove_blood_particle():
 	blood_particles_instance.queue_free()

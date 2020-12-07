@@ -22,10 +22,15 @@ shape = SubResource( 1 )
 [node name="SwipeDetector" type="Node" parent="."]
 script = ExtResource( 3 )
 
+[node name="MovementTimer" type="Timer" parent="SwipeDetector"]
+wait_time = 0.1
+one_shot = true
+
 [node name="SlowMotionTimer" type="Timer" parent="."]
 autostart = true
 
 [node name="Tween" type="Tween" parent="."]
 [connection signal="area_entered" from="Area2D" to="." method="_on_Area2D_area_entered"]
 [connection signal="swipe" from="SwipeDetector" to="." method="_on_SwipeDetector_swipe"]
+[connection signal="timeout" from="SwipeDetector/MovementTimer" to="SwipeDetector" method="_on_MovementTimer_timeout"]
 [connection signal="timeout" from="SlowMotionTimer" to="." method="_on_SlowMotionTimer_timeout"]

@@ -51,7 +51,7 @@ func _on_SwipeDetector_swipe(swipe):
 			target_position = Vector2(Global.points[location_index - 1], global_position.y)
 			location_index -= 1
 			
-	tween.interpolate_property(self, 'position', global_position, target_position, 0.1)
+	tween.interpolate_property(self, 'position', global_position, target_position, 0.06)
 	tween.start()
 
 func _on_SlowMotionTimer_timeout():
